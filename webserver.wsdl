@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="webserver"
+ targetNamespace="http://localhost:8080/webserver.wsdl"
+ xmlns:tns="http://localhost:8080/webserver.wsdl"
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:ocean="urn:scada"
+ xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
+ xmlns:HTTP="http://schemas.xmlsoap.org/wsdl/http/"
+ xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
+ xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
+ xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/"
+ xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+<types>
+
+ <schema targetNamespace="urn:scada"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ocean="urn:scada"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified">
+  <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <complexType name="VarValue"><!-- ocean__VarValue -->
+
+   <sequence>
+     <element name="VarName" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ocean__VarValue::VarName -->
+     <element name="Value" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ocean__VarValue::Value -->
+     <element name="CommState" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ocean__VarValue::CommState -->
+     <element name="AlarmState" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ocean__VarValue::AlarmState -->
+     <element name="AlarmLevel" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ocean__VarValue::AlarmLevel -->
+     <element name="IsDisArming" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ocean__VarValue::IsDisArming -->
+     <element name="IsOverhauling" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ocean__VarValue::IsOverhauling -->
+   </sequence>
+  </complexType>
+  <complexType name="ArrayOfVarValue">
+   <complexContent>
+    <restriction base="SOAP-ENC:Array">
+     <sequence>
+      <element name="item" type="ocean:VarValue" minOccurs="0" maxOccurs="unbounded" nillable="false"/>
+     </sequence>
+     <attribute ref="SOAP-ENC:arrayType" WSDL:arrayType="ocean:VarValue[]"/>
+    </restriction>
+   </complexContent>
+  </complexType>
+  <complexType name="WebSoeInfo"><!-- ocean__WebSoeInfo -->
+
+   <sequence>
+     <element name="VarName" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ocean__WebSoeInfo::VarName -->
+     <element name="VarId" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ocean__WebSoeInfo::VarId -->
+     <element name="NeedConfirm" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ocean__WebSoeInfo::NeedConfirm -->
+     <element name="State" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true"/><!-- ocean__WebSoeInfo::State -->
+     <element name="Time" type="xsd:int" minOccurs="1" maxOccurs="1"/><!-- ocean__WebSoeInfo::Time -->
+   </sequence>
+  </complexType>
+  <complexType name="ArrayOfWebSoeInfo">
+   <complexContent>
+    <restriction base="SOAP-ENC:Array">
+     <sequence>
+      <element name="item" type="ocean:WebSoeInfo" minOccurs="0" maxOccurs="unbounded" nillable="false"/>
+     </sequence>
+     <attribute ref="SOAP-ENC:arrayType" WSDL:arrayType="ocean:WebSoeInfo[]"/>
+    </restriction>
+   </complexContent>
+  </complexType>
+ </schema>
+
+</types>
+
+<message name="ReadVarValueRequest">
+ <part name="varNameList" type="xsd:string"/><!-- ocean__ReadVarValue::varNameList -->
+</message>
+
+<message name="ReadVarValueResponse">
+ <part name="result" type="ocean:ArrayOfVarValue"/><!-- ocean__ReadVarValue::result_ -->
+</message>
+
+<message name="WriteVarValueRequest">
+ <part name="varName" type="xsd:string"/><!-- ocean__WriteVarValue::varName -->
+ <part name="waitTime" type="xsd:int"/><!-- ocean__WriteVarValue::waitTime -->
+ <part name="value" type="xsd:string"/><!-- ocean__WriteVarValue::value -->
+</message>
+
+<message name="WriteVarValueResponse">
+ <part name="result" type="xsd:int"/><!-- ocean__WriteVarValue::result -->
+</message>
+
+<message name="DisArmRequest">
+ <part name="varNameList" type="xsd:string"/><!-- ocean__DisArm::varNameList -->
+ <part name="en" type="xsd:int"/><!-- ocean__DisArm::en -->
+</message>
+
+<message name="DisArmResponse">
+ <part name="result" type="xsd:int"/><!-- ocean__DisArm::result -->
+</message>
+
+<message name="OverhaulRequest">
+ <part name="varNameList" type="xsd:string"/><!-- ocean__Overhaul::varNameList -->
+ <part name="en" type="xsd:int"/><!-- ocean__Overhaul::en -->
+</message>
+
+<message name="OverhaulResponse">
+ <part name="result" type="xsd:int"/><!-- ocean__Overhaul::result -->
+</message>
+
+<message name="SendShortMsgRequest">
+ <part name="shortMsg" type="xsd:string"/><!-- ocean__SendShortMsg::shortMsg -->
+</message>
+
+<message name="SendShortMsgResponse">
+ <part name="result" type="xsd:int"/><!-- ocean__SendShortMsg::result -->
+</message>
+
+<message name="GetSoeWPtrRequest">
+ <part name="soeType" type="xsd:int"/><!-- ocean__GetSoeWPtr::soeType -->
+</message>
+
+<message name="GetSoeWPtrResponse">
+ <part name="soeWPtr" type="xsd:int"/><!-- ocean__GetSoeWPtr::soeWPtr -->
+</message>
+
+<message name="GetSoeNumRequest">
+ <part name="soeType" type="xsd:int"/><!-- ocean__GetSoeNum::soeType -->
+</message>
+
+<message name="GetSoeNumResponse">
+ <part name="soeNum" type="xsd:int"/><!-- ocean__GetSoeNum::soeNum -->
+</message>
+
+<message name="ReadSoePageRequest">
+ <part name="soeType" type="xsd:int"/><!-- ocean__ReadSoePage::soeType -->
+ <part name="numPerPage" type="xsd:int"/><!-- ocean__ReadSoePage::numPerPage -->
+ <part name="pageNo" type="xsd:int"/><!-- ocean__ReadSoePage::pageNo -->
+</message>
+
+<message name="ReadSoePageResponse">
+ <part name="result" type="ocean:ArrayOfWebSoeInfo"/><!-- ocean__ReadSoePage::result_ -->
+</message>
+
+<message name="ConfirmSoeRequest">
+ <part name="soeType" type="xsd:int"/><!-- ocean__ConfirmSoe::soeType -->
+ <part name="varId" type="xsd:int"/><!-- ocean__ConfirmSoe::varId -->
+ <part name="time" type="xsd:int"/><!-- ocean__ConfirmSoe::time -->
+</message>
+
+<message name="ConfirmSoeResponse">
+ <part name="result" type="xsd:int"/><!-- ocean__ConfirmSoe::result -->
+</message>
+
+<message name="SoundLightAlarmFaultLedRequest">
+</message>
+
+<message name="SoundLightAlarmFaultLedResponse">
+ <part name="result" type="xsd:int"/><!-- ocean__SoundLightAlarmFaultLed::result -->
+</message>
+
+<portType name="webserverPortType">
+ <operation name="ReadVarValue">
+  <documentation>Service definition of function ocean__ReadVarValue</documentation>
+  <input message="tns:ReadVarValueRequest"/>
+  <output message="tns:ReadVarValueResponse"/>
+ </operation>
+ <operation name="WriteVarValue">
+  <documentation>Service definition of function ocean__WriteVarValue</documentation>
+  <input message="tns:WriteVarValueRequest"/>
+  <output message="tns:WriteVarValueResponse"/>
+ </operation>
+ <operation name="DisArm">
+  <documentation>Service definition of function ocean__DisArm</documentation>
+  <input message="tns:DisArmRequest"/>
+  <output message="tns:DisArmResponse"/>
+ </operation>
+ <operation name="Overhaul">
+  <documentation>Service definition of function ocean__Overhaul</documentation>
+  <input message="tns:OverhaulRequest"/>
+  <output message="tns:OverhaulResponse"/>
+ </operation>
+ <operation name="SendShortMsg">
+  <documentation>Service definition of function ocean__SendShortMsg</documentation>
+  <input message="tns:SendShortMsgRequest"/>
+  <output message="tns:SendShortMsgResponse"/>
+ </operation>
+ <operation name="GetSoeWPtr">
+  <documentation>Service definition of function ocean__GetSoeWPtr</documentation>
+  <input message="tns:GetSoeWPtrRequest"/>
+  <output message="tns:GetSoeWPtrResponse"/>
+ </operation>
+ <operation name="GetSoeNum">
+  <documentation>Service definition of function ocean__GetSoeNum</documentation>
+  <input message="tns:GetSoeNumRequest"/>
+  <output message="tns:GetSoeNumResponse"/>
+ </operation>
+ <operation name="ReadSoePage">
+  <documentation>Service definition of function ocean__ReadSoePage</documentation>
+  <input message="tns:ReadSoePageRequest"/>
+  <output message="tns:ReadSoePageResponse"/>
+ </operation>
+ <operation name="ConfirmSoe">
+  <documentation>Service definition of function ocean__ConfirmSoe</documentation>
+  <input message="tns:ConfirmSoeRequest"/>
+  <output message="tns:ConfirmSoeResponse"/>
+ </operation>
+ <operation name="SoundLightAlarmFaultLed">
+  <documentation>Service definition of function ocean__SoundLightAlarmFaultLed</documentation>
+  <input message="tns:SoundLightAlarmFaultLedRequest"/>
+  <output message="tns:SoundLightAlarmFaultLedResponse"/>
+ </operation>
+</portType>
+
+<binding name="webserver" type="tns:webserverPortType">
+ <SOAP:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+ <operation name="ReadVarValue">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="WriteVarValue">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="DisArm">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="Overhaul">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="SendShortMsg">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="GetSoeWPtr">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="GetSoeNum">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="ReadSoePage">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="ConfirmSoe">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+ <operation name="SoundLightAlarmFaultLed">
+  <SOAP:operation style="rpc" soapAction=""/>
+  <input>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </input>
+  <output>
+     <SOAP:body use="encoded" namespace="urn:scada" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </output>
+ </operation>
+</binding>
+
+<service name="webserver">
+ <documentation>gSOAP 2.8.21 generated service definition</documentation>
+ <port name="webserver" binding="tns:webserver">
+  <SOAP:address location="http://localhost:8080"/>
+ </port>
+</service>
+
+</definitions>
